@@ -17,14 +17,16 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	 */
     public AdjMatrix() {
         // Implement me!
+        //TODO implement the entire thing
     } // end of AdjMatrix()
-    
-    
+
+
+
     public void addVertex(T vertLabel) {
         // Implement me!
     } // end of addVertex()
-	
-    
+
+
     public void addEdge(T srcLabel, T tarLabel) {
         // Implement me!
     } // end of addEdge()
