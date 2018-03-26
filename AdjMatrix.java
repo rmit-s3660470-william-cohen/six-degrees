@@ -17,6 +17,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	 * Contructs empty graph.
 	 */
     public AdjMatrix() {
+        //XXX TreeMap over TreeSet???
         matrix = new HashMap<T, Set<T> >();
     } // end of AdjMatrix()
 
@@ -35,26 +36,31 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
 
     public ArrayList<T> neighbours(T vertLabel) {
-        ArrayList<T> neighbours = new ArrayList<T>();
-        neighbours = new ArrayList<T>(matrix.get(vertLabel));
-        // Implement me!
-        
-        return neighbours;
+        //FIXME return empty if no neighbours
+        return new ArrayList<T>(matrix.get(vertLabel));
     } // end of neighbours()
     
     
     public void removeVertex(T vertLabel) {
-        // Implement me!
+        
+        //matrix.remove(vertLabel);
     } // end of removeVertex()
 	
     
     public void removeEdge(T srcLabel, T tarLabel) {
-        // Implement me!
+        //TODO validate edge before removing
+        matrix.get(srcLabel).remove(tarLabel);
+        matrix.get(tarLabel).remove(srcLabel);
     } // end of removeEdges()
 	
     
     public void printVertices(PrintWriter os) {
-        // Implement me!
+        for (Object v : matrix.keySet()) {
+            os.print(v.toString() + " ");
+            //System.out.print(v.toString() + " ");
+        }
+        os.println();
+        os.flush();
     } // end of printVertices()
 	
     
@@ -64,10 +70,24 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-    	// Implement me!
-    	
+        //FIXME doesnt correctly return -1 with disconnected v's
+        List<T> visited = new LinkedList<T>();
+        Queue<T> vertices = new LinkedList<T>();
+        Queue<Integer> depths = new LinkedList<Integer>();
+        vertices.add(vertLabel1);
+        depths.add(0);
+        while (!vertices.isEmpty()) {
+            T v = vertices.remove();
+            int d = depths.remove();
+            if (v.equals(vertLabel2)) return d;
+            if (visited.contains(v)) continue;
+            for (T w : neighbours(v)) {
+                vertices.add(w);
+                depths.add(d+1);
+            }
+        }
         // if we reach this point, source and target are disconnected
-        return disconnectedDist;    	
+        return disconnectedDist;
     } // end of shortestPathDistance()
     
 } // end of class AdjMatrix
