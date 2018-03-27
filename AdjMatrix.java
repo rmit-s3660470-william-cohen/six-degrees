@@ -36,13 +36,12 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
 
     public ArrayList<T> neighbours(T vertLabel) {
-        //FIXME return empty if no neighbours
         return new ArrayList<T>(matrix.get(vertLabel));
     } // end of neighbours()
     
     
     public void removeVertex(T vertLabel) {
-        
+        //TODO implement to also remove edges
         //matrix.remove(vertLabel);
     } // end of removeVertex()
 	
@@ -81,6 +80,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
             int d = depths.remove();
             if (v.equals(vertLabel2)) return d;
             if (visited.contains(v)) continue;
+            visited.add(v);
             for (T w : neighbours(v)) {
                 vertices.add(w);
                 depths.add(d+1);

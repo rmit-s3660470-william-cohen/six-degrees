@@ -5,11 +5,22 @@ public class WillTest {
         graph.addVertex("A");
         graph.addVertex("B");
         graph.addVertex("C");
+        graph.addVertex("D");
+        graph.addVertex("E");
+        graph.addVertex("F");
         System.out.println("Adding edges...");
         graph.addEdge("A","B");
-        graph.addEdge("B","C");
-        for (Object n : graph.neighbours("B")) {
-            System.out.print(n.toString() + " ");
-        }
+        graph.addEdge("C","B");
+        graph.addEdge("B","D");
+        graph.addEdge("A","E");
+        graph.addEdge("D","C");
+        System.out.println("Distance from E to B...");
+        System.out.println(graph.shortestPathDistance("E", "B"));
+        System.out.println("Distance from E to C...");
+        System.out.println(graph.shortestPathDistance("E", "C"));
+        System.out.println("Distance from B to F...");
+        System.out.println(graph.shortestPathDistance("B", "F"));
+
+
     }
 }
