@@ -17,7 +17,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	 * Contructs empty graph.
 	 */
     public AdjMatrix() {
-        //XXX TreeMap over TreeSet???
         matrix = new HashMap<T, Set<T> >();
     } // end of AdjMatrix()
 
@@ -90,4 +89,4 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
         return disconnectedDist;
     } // end of shortestPathDistance()
     
-} // end of class AdjMatrix
+} // end of class AdjMatri
