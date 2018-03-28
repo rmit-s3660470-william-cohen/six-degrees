@@ -11,31 +11,51 @@ import java.util.*;
  */
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
-
-    private Map<T, Set<T> > matrix;
+    private int numVertices;
+    private Map<T, Integer> indexes;
+    private Map<Integer, T> vertices;
+    private boolean[][] matrix;
 	/**
 	 * Contructs empty graph.
 	 */
     public AdjMatrix() {
-        matrix = new HashMap<T, Set<T> >();
+        numVertices = 0;
+        indexes = new HashMap<T, Integer>();
+        vertices = new HashMap<Integer, T>();
+        matrix = new boolean[0][0];
     } // end of AdjMatrix()
 
 
     public void addVertex(T vertLabel) {
-        matrix.put(vertLabel, new TreeSet<T>());
+        boolean[][] newMatrix = new boolean[numVertices+1][numVertices+1];
+        for (int i = 0; i < numVertices; i++) {
+            System.arraycopy(matrix[i], 0, newMatrix[i], 0, numVertices);
+        }
+        matrix = newMatrix;
+        indexes.put(vertLabel, numVertices);
+        vertices.put(numVertices, vertLabel);
+        numVertices++;
     } // end of addVertex()
 
 
     public void addEdge(T srcLabel, T tarLabel) {
         //TODO validate the edges before chucking them into the structure
-        
-        matrix.get(srcLabel).add(tarLabel);
-        matrix.get(tarLabel).add(srcLabel);
+        int srcPos = indexes.get(srcLabel);
+        int tarPos = indexes.get(tarLabel);
+        matrix[srcPos][tarPos] = true;
+        matrix[tarPos][srcPos] = true;
     } // end of addEdge()
 	
 
     public ArrayList<T> neighbours(T vertLabel) {
-        return new ArrayList<T>(matrix.get(vertLabel));
+        ArrayList<T> neighbours = new ArrayList<T>();
+        int vertIndex = indexes.get(vertLabel);
+        for (int i = 0; i < numVertices; i++) {
+            if (matrix[vertIndex][i]) {
+                neighbours.add(vertices.get(i));
+            }
+        }
+        return neighbours;
     } // end of neighbours()
     
     
@@ -47,18 +67,10 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void removeEdge(T srcLabel, T tarLabel) {
         //TODO validate edge before removing
-        matrix.get(srcLabel).remove(tarLabel);
-        matrix.get(tarLabel).remove(srcLabel);
     } // end of removeEdges()
 	
     
     public void printVertices(PrintWriter os) {
-        for (Object v : matrix.keySet()) {
-            os.print(v.toString() + " ");
-            //System.out.print(v.toString() + " ");
-        }
-        os.println();
-        os.flush();
     } // end of printVertices()
 	
     
@@ -68,24 +80,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-        //FIXME doesnt correctly return -1 with disconnected v's
-        List<T> visited = new LinkedList<T>();
-        Queue<T> vertices = new LinkedList<T>();
-        Queue<Integer> depths = new LinkedList<Integer>();
-        vertices.add(vertLabel1);
-        depths.add(0);
-        while (!vertices.isEmpty()) {
-            T v = vertices.remove();
-            int d = depths.remove();
-            if (v.equals(vertLabel2)) return d;
-            if (visited.contains(v)) continue;
-            visited.add(v);
-            for (T w : neighbours(v)) {
-                vertices.add(w);
-                depths.add(d+1);
-            }
-        }
-        // if we reach this point, source and target are disconnected
         return disconnectedDist;
     } // end of shortestPathDistance()
     
