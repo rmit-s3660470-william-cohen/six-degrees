@@ -11,10 +11,12 @@ import java.util.*;
  */
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
+    //Keep the total number of vertices (quicker than list length getters)
     private int numVertices;
-    private Map<T, Integer> indexes;
-    private Map<Integer, T> vertices;
-    private boolean[][] matrix;
+    //Two maps because Java has no bi-direction map
+    private Map<T, Integer> indexes; //Maps Vertices to their Indexes
+    private Map<Integer, T> vertices; //Maps Indexes to their Vertices
+    private boolean[][] matrix; //The actual Adjacency matrix
 	/**
 	 * Contructs empty graph.
 	 */
@@ -60,26 +62,90 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     
     public void removeVertex(T vertLabel) {
-        //TODO implement to also remove edges
-        //matrix.remove(vertLabel);
+        //TODO validate vertex before removing
+        int removalIndex = indexes.get(vertLabel);
+
+        boolean[][] newMatrix = new boolean[numVertices-1][numVertices-1];
+        //for (int i = 0; i < matrix.length; i++) {
+        //    for (int j = 0; j < matrix.length; j++) {
+        //        System.out.print((matrix[i][j] ? 1 : 0) + " ");
+        //    }
+        //    System.out.println();
+        //}
+
+        for (int i = 0; i < removalIndex; i++) {
+            System.arraycopy(matrix[i], 0, newMatrix[i], 0, removalIndex);
+            System.arraycopy(matrix[i], removalIndex+1, newMatrix[i], removalIndex, numVertices-removalIndex-1);
+        }
+        for (int i = removalIndex+1; i < numVertices; i++) {
+            System.arraycopy(matrix[i], 0, newMatrix[i-1], 0, removalIndex);
+            System.arraycopy(matrix[i], removalIndex+1, newMatrix[i-1], removalIndex, numVertices-removalIndex-1);
+        }
+        matrix = newMatrix;
+        indexes.remove(vertLabel);
+        vertices.remove(removalIndex);
+        for (int i = removalIndex+1; i < numVertices; i++) {
+            T v = vertices.get(i);
+            vertices.put(i-1, v);
+            vertices.remove(i);
+            indexes.remove(v);
+            indexes.put(v, i-1);
+        }
+        numVertices--;
     } // end of removeVertex()
 	
     
     public void removeEdge(T srcLabel, T tarLabel) {
         //TODO validate edge before removing
+        matrix[indexes.get(srcLabel)][index.get(tarLabel)] = false;
+        matrix[index.get(tarLabel)][indexes.get(srcLabel)] = false;
     } // end of removeEdges()
 	
     
     public void printVertices(PrintWriter os) {
+        for (Object v : indexes.keySet()) {
+            os.print(v.toString() + " ");
+        }
+        os.println();
+        os.flush();
     } // end of printVertices()
 	
     
     public void printEdges(PrintWriter os) {
-        // Implement me!
+        //TODO take advantage of matrix symmetry to make this heaps quicker
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                if (matrix[i][j]) {
+                    T v1 = vertices.get(i);
+                    T v2 = vertices.get(j);
+                    os.println(v1.toString() + " " + v2.toString());
+                }
+            }
+        }
+        os.flush();
     } // end of printEdges()
     
     
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
+        Queue<T> toVisit = new LinkedList<T>();
+        Queue<Integer> depths = new LinkedList<Integer>();
+        boolean[] marked = new boolean[numVertices];
+        for (int i = 0; i < numVertices; i++) marked[i] = false;
+        toVisit.add(vertLabel1);
+        depths.add(0);
+        while (!toVisit.isEmpty()) {
+            T v = toVisit.remove();
+            int d = depths.remove();
+            if (v.equals(vertLabel2)) return d;
+            if (marked[indexes.get(v)]) continue;
+            marked[indexes.get(v)] = true;
+            for (T w : neighbours(v)) {
+                //if (!marked[indexes.get(w)]) {
+                    toVisit.add(w);
+                    depths.add(d+1);
+                //}
+            }
+        }
         return disconnectedDist;
     } // end of shortestPathDistance()
     
