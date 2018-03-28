@@ -97,8 +97,8 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void removeEdge(T srcLabel, T tarLabel) {
         //TODO validate edge before removing
-        matrix[indexes.get(srcLabel)][index.get(tarLabel)] = false;
-        matrix[index.get(tarLabel)][indexes.get(srcLabel)] = false;
+        matrix[indexes.get(srcLabel)][indexes.get(tarLabel)] = false;
+        matrix[indexes.get(tarLabel)][indexes.get(srcLabel)] = false;
     } // end of removeEdges()
 	
     
