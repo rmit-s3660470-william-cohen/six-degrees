@@ -29,6 +29,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 
     public void addVertex(T vertLabel) {
+        //dont add vertices that are already present
+        if (indexes.containsKey(vertLabel)) return;
+
         boolean[][] newMatrix = new boolean[numVertices+1][numVertices+1];
         for (int i = 0; i < numVertices; i++) {
             System.arraycopy(matrix[i], 0, newMatrix[i], 0, numVertices);
