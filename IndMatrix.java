@@ -12,21 +12,60 @@ import java.util.*;
 public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 {
 
+	private int numVertices;
+	private int numEdges;
+	private Map<T, Integer> indexes;
+	private Map<Integer, T> vertices;
+	private boolean[][] incidenceMatrix;
 	/**
 	 * Contructs empty graph.
 	 */
     public IndMatrix() {
     	// Implement me!
+    	numVertices = 0;
+    	numEdges = 0;
+    	indexes = new HashMap<T, Integer>();
+        vertices = new HashMap<Integer, T>();
+    	incidenceMatrix = new boolean[0][0];
+    	
     } // end of IndMatrix()
     
     
     public void addVertex(T vertLabel) {
         // Implement me!
+    	
+    	//dont add vertices that are already present
+        if (indexes.containsKey(vertLabel)) 
+        	return;
+        
+        boolean[][] newMatrix = new boolean[numVertices+1][numEdges];
+    	
+        for (int i = 0; i < numVertices; i++) {
+            System.arraycopy(matrix[i], 0, newMatrix[i], 0, numEdges);
+        }
+        
+        incidenceMatrix = newMatrix;
+        
+    	indexes.put(vertLabel, numVertices);
+        vertices.put(numVertices, vertLabel);
+    	
+    	numVertices++;
     } // end of addVertex()
 	
     
     public void addEdge(T srcLabel, T tarLabel) {
         // Implement me!
+    	
+    	//Need to make new matrix here in order to add new column
+    	
+    	int srcPos = indexes.get(srcLabel);
+        int tarPos = indexes.get(tarLabel);
+    	
+    	incidenceMatrix[srcPos][numEdges] = true;
+    	incidenceMatrix[tarPos][numEdges] = true;
+    	
+    	numEdges++;
+    	
     } // end of addEdge()
 	
 
