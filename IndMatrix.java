@@ -40,8 +40,12 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         
         boolean[][] newMatrix = new boolean[numVertices+1][numEdges];
     	
-        for (int i = 0; i < numVertices; i++) {
-            System.arraycopy(matrix[i], 0, newMatrix[i], 0, numEdges);
+        if(numEdges > 0)
+        {
+        	for (int i = 0; i < numVertices; i++) 
+        	{
+        		System.arraycopy(matrix[i], 0, newMatrix[i], 0, numEdges);
+        	}
         }
         
         incidenceMatrix = newMatrix;
@@ -56,8 +60,18 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     public void addEdge(T srcLabel, T tarLabel) {
         // Implement me!
     	
-    	//Need to make new matrix here in order to add new column
     	
+    	boolean[][] newMatrix = new boolean[numVertices][numEdges+1];
+    	
+    	if(numEdges > 0)
+        {
+        	for (int i = 0; i < numVertices; i++) 
+        	{
+        		System.arraycopy(matrix[i], 0, newMatrix[i], 0, numEdges);
+        	}
+        }
+        
+        incidenceMatrix = newMatrix;
     	int srcPos = indexes.get(srcLabel);
         int tarPos = indexes.get(tarLabel);
     	
