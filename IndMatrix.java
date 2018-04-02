@@ -172,8 +172,32 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     public void removeEdge(T srcLabel, T tarLabel) {
         // Implement me!
     	
+    	int srcPos = vIndexes.get(srcLabel);
+        int tarPos = vIndexes.get(tarLabel);
+        int removalIndex = -1;
+    	boolean[][] newMatrix = new boolean[numVertices][numEdges-1];
+        
+        for(int i = 0; i < numEdges; i++)
+        {
+        	if (incidenceMatrix[srcPos][i] && incidenceMatrix[tarPos][i])
+        	{
+        		removalIndex = i;
+        		break;
+        	}
+        		
+        }
+        if(removalIndex != -1)
+        {
+        	for (int i = 0; i < numVertices; i++) 
+        	{
+                System.arraycopy(matrix[i], 0, newMatrix[i], 0, removalIndex);
+                System.arraycopy(matrix[i], removalIndex+1, newMatrix[i], removalIndex, numEdges-removalIndex-1);
+            }
+        	incidenceMatrix = newMatrix;
+        	
+        	numEdges--;
+        }
     	
-    	numEdges--;
     } // end of removeEdges()
 	
     
