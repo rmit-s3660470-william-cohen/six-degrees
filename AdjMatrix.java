@@ -11,9 +11,12 @@ import java.util.*;
  */
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
+    private static final int INITIAL_SIZE = 1000;
+    private static final int SIZE_INCREMENT = 1000;
+
     //Keep the total number of vertices (quicker than list length getters)
     private int numVertices;
-    //Two maps because Java has no bi-direction map
+    //Two maps because Java has no bi-directional map
     private Map<T, Integer> indexes; //Maps Vertices to their Indexes
     private Map<Integer, T> vertices; //Maps Indexes to their Vertices
     private boolean[][] matrix; //The actual Adjacency matrix
@@ -24,22 +27,29 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
         numVertices = 0;
         indexes = new HashMap<T, Integer>();
         vertices = new HashMap<Integer, T>();
-        matrix = new boolean[0][0];
+        matrix = new boolean[INITIAL_SIZE][INITIAL_SIZE];
     } // end of AdjMatrix()
 
 
     public void addVertex(T vertLabel) {
         //dont add vertices that are already present
         if (indexes.containsKey(vertLabel)) return;
-
-        boolean[][] newMatrix = new boolean[numVertices+1][numVertices+1];
-        for (int i = 0; i < numVertices; i++) {
-            System.arraycopy(matrix[i], 0, newMatrix[i], 0, numVertices);
+        int insert = getNextFreeSpot();
+        //no free spot
+        if (insert == -1) {
+            boolean[][] newMatrix = new boolean[numVertices+SIZE_INCREMENT][numVertices+SIZE_INCREMENT];
+            for (int i = 0; i < numVertices; i++) {
+                System.arraycopy(matrix[i], 0, newMatrix[i], 0, numVertices);
+            }
+            matrix = newMatrix;
+            indexes.put(vertLabel, numVertices);
+            vertices.put(numVertices, vertLabel);
+            numVertices += SIZE_INCREMENT;
+        } else {
+            //free spot
+            indexes.put(vertLabel, insert);
+            vertices.put(insert, vertLabel);
         }
-        matrix = newMatrix;
-        indexes.put(vertLabel, numVertices);
-        vertices.put(numVertices, vertLabel);
-        numVertices++;
     } // end of addVertex()
 
 
@@ -63,38 +73,18 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
         return neighbours;
     } // end of neighbours()
     
-    
     public void removeVertex(T vertLabel) {
         //TODO validate vertex before removing
         int removalIndex = indexes.get(vertLabel);
 
-        boolean[][] newMatrix = new boolean[numVertices-1][numVertices-1];
-        //for (int i = 0; i < matrix.length; i++) {
-        //    for (int j = 0; j < matrix.length; j++) {
-        //        System.out.print((matrix[i][j] ? 1 : 0) + " ");
-        //    }
-        //    System.out.println();
-        //}
+        //
+        for (T neighbour : neighbours(vertLabel)) {
+            removeEdge(neighbour, vertLabel);
+        }
 
-        for (int i = 0; i < removalIndex; i++) {
-            System.arraycopy(matrix[i], 0, newMatrix[i], 0, removalIndex);
-            System.arraycopy(matrix[i], removalIndex+1, newMatrix[i], removalIndex, numVertices-removalIndex-1);
-        }
-        for (int i = removalIndex+1; i < numVertices; i++) {
-            System.arraycopy(matrix[i], 0, newMatrix[i-1], 0, removalIndex);
-            System.arraycopy(matrix[i], removalIndex+1, newMatrix[i-1], removalIndex, numVertices-removalIndex-1);
-        }
-        matrix = newMatrix;
+        //
         indexes.remove(vertLabel);
         vertices.remove(removalIndex);
-        for (int i = removalIndex+1; i < numVertices; i++) {
-            T v = vertices.get(i);
-            vertices.put(i-1, v);
-            vertices.remove(i);
-            indexes.remove(v);
-            indexes.put(v, i-1);
-        }
-        numVertices--;
     } // end of removeVertex()
 	
     
@@ -152,4 +142,13 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
         return disconnectedDist;
     } // end of shortestPathDistance()
     
+
+    //helper function
+    //TODO optimise this
+    private int getNextFreeSpot() {
+        for (int i = 0; i < numVertices; i++) {
+            if (!vertices.containsKey(i)) return i;
+        }
+        return -1;
+    }
 } // end of class AdjMatri
