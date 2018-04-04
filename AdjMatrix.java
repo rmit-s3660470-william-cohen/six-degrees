@@ -74,22 +74,20 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     } // end of neighbours()
     
     public void removeVertex(T vertLabel) {
-        //TODO validate vertex before removing
+        if (!indexes.containsKey(vertLabel)) return;
         int removalIndex = indexes.get(vertLabel);
-
-        //
         for (T neighbour : neighbours(vertLabel)) {
             removeEdge(neighbour, vertLabel);
         }
-
-        //
         indexes.remove(vertLabel);
         vertices.remove(removalIndex);
     } // end of removeVertex()
 	
     
     public void removeEdge(T srcLabel, T tarLabel) {
-        //TODO validate edge before removing
+        //validate edge before removing
+        if (!indexes.containsKey(srcLabel) || !indexes.containsKey(tarLabel))
+            return;
         matrix[indexes.get(srcLabel)][indexes.get(tarLabel)] = false;
         matrix[indexes.get(tarLabel)][indexes.get(srcLabel)] = false;
     } // end of removeEdges()
@@ -105,7 +103,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
     
     public void printEdges(PrintWriter os) {
-        //TODO take advantage of matrix symmetry to make this heaps quicker
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
                 if (matrix[i][j]) {
@@ -144,7 +141,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
 
     //helper function
-    //TODO optimise this
+    //returns the first array slot that has no vertex associated with it
     private int getNextFreeSpot() {
         for (int i = 0; i < numVertices; i++) {
             if (!vertices.containsKey(i)) return i;
