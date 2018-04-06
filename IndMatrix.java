@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-import model.interfaces.Player;
-
 
 /**
  * Incidence matrix implementation for the FriendshipGraph interface.
@@ -46,7 +44,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         {
         	for (int i = 0; i < numVertices; i++) 
         	{
-        		System.arraycopy(matrix[i], 0, newMatrix[i], 0, numEdges);
+        		System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
         	}
         }
         
@@ -99,7 +97,6 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	
     	int removalIndex = vIndexes.get(vertLabel);
     	int numEdgesRemoved = 0;
-    	ArrayList<int> eRemoveIndexes = new ArrayList<int>();
     	Map<Integer,Integer> eRemoveIndexes = new HashMap<Integer, Integer>();
     	boolean[][] newMatrix = new boolean[numVertices-1][numEdges];
     	
@@ -144,7 +141,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	if(numEdgesRemoved > 0)
     	{
     		int skips = 0;
-    		newMatrix = new boolean[numVertices][numEdges-numEdgesRemoved]
+    		newMatrix = new boolean[numVertices][numEdges-numEdgesRemoved];
     		for (int i = 0; i < numVertices; i++)
     		{
     			skips = 0;
@@ -190,8 +187,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         {
         	for (int i = 0; i < numVertices; i++) 
         	{
-                System.arraycopy(matrix[i], 0, newMatrix[i], 0, removalIndex);
-                System.arraycopy(matrix[i], removalIndex+1, newMatrix[i], removalIndex, numEdges-removalIndex-1);
+                System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, removalIndex);
+                System.arraycopy(incidenceMatrix[i], removalIndex+1, newMatrix[i], removalIndex, numEdges-removalIndex-1);
             }
         	incidenceMatrix = newMatrix;
         	
