@@ -57,9 +57,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     } // end of addVertex()
 	
     
-    public void addEdge(T srcLabel, T tarLabel) {
-        // Implement me!
-    	
+    public void addEdge(T srcLabel, T tarLabel) {  	
     	
     	boolean[][] newMatrix = new boolean[numVertices][numEdges+1];
     	
@@ -67,7 +65,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         {
         	for (int i = 0; i < numVertices; i++) 
         	{
-        		System.arraycopy(matrix[i], 0, newMatrix[i], 0, numEdges);
+        		System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
         	}
         }
         
@@ -85,15 +83,34 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 
     public ArrayList<T> neighbours(T vertLabel) {
         ArrayList<T> neighbours = new ArrayList<T>();
+        ArrayList<Integer> neighbourPos = new ArrayList<Integer>();
+        int vertPos = vIndexes.get(vertLabel);
         
-        // Implement me!
+        for (int i = 0; i < numEdges; i++)
+        {
+        	if (incidenceMatrix[vertPos][i])
+        	{
+        		neighbourPos.add(i);
+        	}
+        }
+        
+        for (int pos : neighbourPos)
+		{
+        	for (int i = 0; i < numVertices; i++)
+        	{
+       			if(i != vertPos && incidenceMatrix[i][pos])
+       			{
+        			neighbours.add(vertices.get(i));
+        			break;
+       			}
+       		}
+        }
         
         return neighbours;
     } // end of neighbours()
     
     
     public void removeVertex(T vertLabel) {
-        // Implement me!
     	
     	int removalIndex = vIndexes.get(vertLabel);
     	int numEdgesRemoved = 0;
@@ -167,8 +184,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 	
     
     public void removeEdge(T srcLabel, T tarLabel) {
-        // Implement me!
-    	
+            	
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
         int removalIndex = -1;
@@ -209,6 +225,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void printEdges(PrintWriter os) {
         // Implement me!
+    	
+    	
     } // end of printEdges()
     
     
