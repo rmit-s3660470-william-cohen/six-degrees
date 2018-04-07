@@ -86,6 +86,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         ArrayList<Integer> neighbourPos = new ArrayList<Integer>();
         int vertPos = vIndexes.get(vertLabel);
         
+        //Fills the arraylist with the indexes of the edges associated with the vertex
         for (int i = 0; i < numEdges; i++)
         {
         	if (incidenceMatrix[vertPos][i])
@@ -94,6 +95,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         	}
         }
         
+        //Looks at each edge (column) associated with the vertex. Once it finds another vertex
+        //associated with that edge, it adds that vertex to the array and moves to the next relevant edge
         for (int pos : neighbourPos)
 		{
         	for (int i = 0; i < numVertices; i++)
@@ -225,7 +228,36 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void printEdges(PrintWriter os) {
         // Implement me!
+    	int i;
+    	T srcLabel = null;
+    	T tarLabel = null;
     	
+    	for (int j = 0; j < numEdges; j++)
+    	{
+    		i = 0;
+    		while (i < numVertices)
+    		{
+    			if(incidenceMatrix[i][j])
+    			{
+        			srcLabel = vertices.get(i);
+        			i++;
+        			break;
+    			}
+    			i++;
+    		}
+    		while (i < numVertices)
+    		{
+    			if(incidenceMatrix[i][j])
+    			{
+        			tarLabel = vertices.get(i);
+        			break;
+    			}
+    			i++;
+    		}
+            os.print(srcLabel.toString() + " " + tarLabel.toString());
+            os.println();
+            os.flush();
+    	}
     	
     } // end of printEdges()
     
