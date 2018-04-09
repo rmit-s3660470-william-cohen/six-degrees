@@ -20,8 +20,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 	private int edgeSize;
 	private Map<T, Integer> vIndexes;
 	private Map<Integer, T> vertices;
-	private Map<T, Integer> eIndexes;
-	private Map<Integer, T> edges;
+	private Map<Edge, Integer> eIndexes;
+	private Map<Integer, Edge> edges;
 	private boolean[][] incidenceMatrix;
 	/**
 	 * Contructs empty graph.
@@ -270,7 +270,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	if (!vIndexes.containsKey(srcLabel) || !vIndexes.containsKey(tarLabel))
             return;
             	
-    	
+    	int srcPos = vIndexes.get(srcLabel);
+        int tarPos = vIndexes.get(tarLabel);
     	/*
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
@@ -314,10 +315,10 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void printEdges(PrintWriter os) {
 
-    	for (Object e : eIndexes.keySet()) {
-            os.print(e.getSourceLabel() + " " + e.getTarLabel());
+    	for (Edge e : eIndexes.keySet()) {
+            os.print(e.getSrcLabel() + " " + e.getTarLabel());
             os.println();
-            os.print(e.getTarLabel() + " " + e.getSourceLabel());
+            os.print(e.getTarLabel() + " " + e.getSrcLabel());
     	}
         os.println();
         os.flush();
