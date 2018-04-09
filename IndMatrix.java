@@ -96,7 +96,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void addEdge(T srcLabel, T tarLabel) {  	
     	
-    	Edge e = new Edge(srcLabel,tarLabel);
+    	Edge<T> e = new Edge<T>(srcLabel,tarLabel);
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
         
