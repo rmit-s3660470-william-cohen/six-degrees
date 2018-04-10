@@ -44,6 +44,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
                 System.arraycopy(matrix[i], 0, newMatrix[i], 0, matrix.length);
             }
             //index the new vertex
+            insert = matrix.length;
             indexes.put(vertLabel, matrix.length);
             vertices.put(matrix.length, vertLabel);
             matrix = newMatrix;
@@ -52,6 +53,8 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
             indexes.put(vertLabel, insert);
             vertices.put(insert, vertLabel);
         }
+        //DEBUG
+        System.out.println("Inserting vertex at position: " + insert);
     } // end of addVertex()
 
 

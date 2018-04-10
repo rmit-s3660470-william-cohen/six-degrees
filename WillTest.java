@@ -17,7 +17,8 @@ public class WillTest {
         //graph.addEdge("E", "F"); //Test edge for removal
         //System.out.println("Removing vertex 'C'...");
         //graph.removeVertex("C");
-        graph.removeVertex("penis");
+        //System.out.println("Adding vertex again...");
+        //graph.addVertex("C");
         System.out.println("Distance from E to B...");
         System.out.println(graph.shortestPathDistance("E", "B"));
         System.out.println("Distance from E to C...");
