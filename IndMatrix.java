@@ -20,8 +20,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 	private int edgeSize;
 	private Map<T, Integer> vIndexes;
 	private Map<Integer, T> vertices;
-	private Map<Set<T>,Integer> eIndexes;
-	private Map<Integer,Set<T>> edges;
+	private Map<TreeSet<T>,Integer> eIndexes;
+	private Map<Integer,TreeSet<T>> edges;
 	private boolean[][] incidenceMatrix;
 	/**
 	 * Contructs empty graph.
@@ -32,6 +32,8 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	edgeSize = INITIAL_SIZE;
     	vIndexes = new HashMap<T, Integer>();
         vertices = new HashMap<Integer, T>();
+        eIndexes = new HashMap<TreeSet<T>,Integer>();
+        edges = new HashMap<Integer,TreeSet<T>>();
         incidenceMatrix = new boolean[vertexSize][edgeSize];
     	
     } // end of IndMatrix()
@@ -64,30 +66,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         {
         	vIndexes.put(vertLabel, insert);
             vertices.put(insert, vertLabel);
-            numVertices++;
         }
-        
-        
-        
-        /*
-        
-        boolean[][] newMatrix = new boolean[numVertices+1][numEdges];
-    	
-        if(numEdges > 0)
-        {
-        	for (int i = 0; i < numVertices; i++) 
-        	{
-        		System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
-        	}
-        }
-        
-        incidenceMatrix = newMatrix;
-        
-    	vIndexes.put(vertLabel, numVertices);
-        vertices.put(numVertices, vertLabel);
-    	
-    	numVertices++;
-    	*/
     } // end of addVertex()
 	
     
@@ -98,7 +77,10 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         
         int insert = getNextFreeSpotE();
     	
-
+        TreeSet<T> edge = new TreeSet<T>();
+    	edge.add(srcLabel);
+    	edge.add(tarLabel);
+        
         //No free spot
         if(insert == -1)
         {
@@ -111,45 +93,28 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
                        	
         	incidenceMatrix[srcPos][edgeSize] = true;
         	incidenceMatrix[tarPos][edgeSize] = true;
+        	
+        	eIndexes.put(edge,edgeSize);
+        	edges.put(edgeSize,edge);
+        	
             edgeSize *= SIZE_MULTIPLIER;
-
-            numEdges++;
         }
         //Free spot
         else
         {
             incidenceMatrix[srcPos][insert] = true;
         	incidenceMatrix[tarPos][insert] = true;
-            numEdges++;
+        	
+        	eIndexes.put(edge,insert);
+        	edges.put(insert,edge);
         }
-    	
-    	/*
-    	boolean[][] newMatrix = new boolean[numVertices][numEdges+1];
-    	
-    	if(numEdges > 0)
-        {
-        	for (int i = 0; i < numVertices; i++) 
-        	{
-        		System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
-        	}
-        }
-        
-        incidenceMatrix = newMatrix;
-    	int srcPos = vIndexes.get(srcLabel);
-        int tarPos = vIndexes.get(tarLabel);
-    	
-    	incidenceMatrix[srcPos][numEdges] = true;
-    	incidenceMatrix[tarPos][numEdges] = true;
-    	
-    	numEdges++;
-    	*/
-    	
     } // end of addEdge()
 	
 
     public ArrayList<T> neighbours(T vertLabel) {
+    	
         ArrayList<T> neighbours = new ArrayList<T>();
-        
+        /*
         for (Edge e : eIndexes.keySet())
         {
         	if(e.getSrcLabel().toString().equals(vertLabel.toString()))
@@ -198,6 +163,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     
     public void removeVertex(T vertLabel) {
+    	/*
     	
         if (!vIndexes.containsKey(vertLabel)) 
         	return;
@@ -271,10 +237,12 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         	incidenceMatrix = newMatrix;
     		numEdges -= numEdgesRemoved;
     	}
+    	*/
     } // end of removeVertex()
 	
     
     public void removeEdge(T srcLabel, T tarLabel) {
+    	
     	
     	if (!vIndexes.containsKey(srcLabel) || !vIndexes.containsKey(tarLabel))
             return;
@@ -282,6 +250,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
         
+        /*
         for (Edge e : eIndexes.keySet()) 
         {
         	if ((e.getSrcLabel().toString().equals(srcLabel.toString()) && 
@@ -338,7 +307,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void printVertices(PrintWriter os) {
     	for (Object v : vIndexes.keySet()) {
-            os.print(v.toString() + " ");
+            os.print(v + " ");
         }
         os.println();
         os.flush();
@@ -347,50 +316,14 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void printEdges(PrintWriter os) {
 
-    	for (Edge e : eIndexes.keySet()) {
-            os.print(e.getSrcLabel() + " " + e.getTarLabel());
-            os.println();
-            os.print(e.getTarLabel() + " " + e.getSrcLabel());
-			os.println();
+    	for (TreeSet<T> edge : eIndexes.keySet()) {
+    		os.print(edge.first() + " " + edge.last());
+    		os.println();
+    		os.print(edge.last() + " " + edge.first());
+    		os.println();
     	}
         os.println();
         os.flush();
-    	
-    	
-    	/*
-    	int i;
-    	T srcLabel = null;
-    	T tarLabel = null;
-    	
-    	for (int j = 0; j < numEdges; j++)
-    	{
-    		i = 0;
-    		while (i < numVertices)
-    		{
-    			if(incidenceMatrix[i][j])
-    			{
-        			srcLabel = vertices.get(i);
-        			i++;
-        			break;
-    			}
-    			i++;
-    		}
-    		while (i < numVertices)
-    		{
-    			if(incidenceMatrix[i][j])
-    			{
-        			tarLabel = vertices.get(i);
-        			break;
-    			}
-    			i++;
-    		}
-            os.print(srcLabel.toString() + " " + tarLabel.toString());
-            os.println();
-            os.print(tarLabel.toString() + " " + srcLabel.toString());
-            os.println();
-            os.flush();
-    	}
-    	*/
     } // end of printEdges()
     
     
