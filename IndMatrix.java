@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+//Set<T> pair = new LinkedSet<T>();
 
 /**
  * Incidence matrix implementation for the FriendshipGraph interface.
@@ -20,8 +21,6 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 	private int edgeSize;
 	private Map<T, Integer> vIndexes;
 	private Map<Integer, T> vertices;
-	private Map<Edge, Integer> eIndexes;
-	private Map<Integer, Edge> edges;
 	private boolean[][] incidenceMatrix;
 	/**
 	 * Contructs empty graph.
@@ -33,12 +32,11 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	edgeSize = INITIAL_SIZE;
     	vIndexes = new HashMap<T, Integer>();
         vertices = new HashMap<Integer, T>();
-        eIndexes = new HashMap<Edge, Integer>();
-        edges = new HashMap<Integer, Edge>();
-    	incidenceMatrix = new boolean[vertexSize][edgeSize];
+        incidenceMatrix = new boolean[vertexSize][edgeSize];
     	
     } // end of IndMatrix()
-    
+    //TODO
+    //Fix all array copies
     
     public void addVertex(T vertLabel) {
     	
@@ -51,13 +49,13 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         //No free spot
         if(insert == -1)
         {
-            vertexSize += SIZE_INCREMENT;
-        	boolean[][] newMatrix = new boolean[vertexSize][edgeSize];
-            for (int i = 0; i < numVertices; i++) 
+        	boolean[][] newMatrix = new boolean[vertexSize + SIZE_INCREMENT][edgeSize];
+            for (int i = 0; i < vertexSize; i++) 
             {
-                System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
+                System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, edgeSize);
             }
             incidenceMatrix = newMatrix;
+			vertexSize += SIZE_INCREMENT;
             vIndexes.put(vertLabel, numVertices);
             vertices.put(numVertices, vertLabel);
             numVertices++;
@@ -106,14 +104,13 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         //No free spot
         if(insert == -1)
         {
-            edgeSize += SIZE_INCREMENT;
-        	boolean[][] newMatrix = new boolean[vertexSize][edgeSize];
-            for (int i = 0; i < numVertices; i++) 
+        	boolean[][] newMatrix = new boolean[vertexSize][edgeSize+SIZE_INCREMENT];
+            for (int i = 0; i < vertexSize; i++) 
             {
-                System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
+                System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, edgeSize);
             }
             incidenceMatrix = newMatrix;
-            
+            edgeSize += SIZE_INCREMENT;
             eIndexes.put(e, numEdges);
             edges.put(numEdges, e);
                  	
@@ -158,6 +155,23 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
 
     public ArrayList<T> neighbours(T vertLabel) {
         ArrayList<T> neighbours = new ArrayList<T>();
+        
+        for (Edge e : eIndexes.keySet())
+        {
+        	if(e.getSrcLabel().toString().equals(vertLabel.toString()))
+        	{
+        		int vertPos = vIndexes.get(e.getTarLabel());
+        		neighbours.add(vertices.get(vertPos));
+        	}
+        	
+        	if(e.getTarLabel().toString().equals(vertLabel.toString()))
+        	{
+        		int vertPos = vIndexes.get(e.getSrcLabel());
+        		neighbours.add(vertices.get(vertPos));
+        	}
+        }
+        
+        /*
         ArrayList<Integer> neighbourPos = new ArrayList<Integer>();
         int vertPos = vIndexes.get(vertLabel);
         
@@ -184,6 +198,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
        		}
         }
         
+        */
         return neighbours;
     } // end of neighbours()
     
@@ -272,12 +287,35 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
             	
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
+        
+        for (Edge e : eIndexes.keySet()) 
+        {
+        	if ((e.getSrcLabel().toString().equals(srcLabel.toString()) && 
+        		e.getTarLabel().toString().equals(tarLabel.toString())) ||
+        		(e.getSrcLabel().toString().equals(tarLabel.toString()) && 
+            	e.getTarLabel().toString().equals(srcLabel.toString())))
+        	{
+        		int ePos = eIndexes.get(e);
+        				        		
+        		incidenceMatrix[srcPos][ePos] = false;
+            	incidenceMatrix[tarPos][ePos] = false;
+            	
+            	eIndexes.remove(e);
+                edges.remove(ePos);
+                
+                numEdges--;
+                return;
+                
+        	}
+        }
+        
     	/*
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
         int removalIndex = -1;
     	boolean[][] newMatrix = new boolean[numVertices][numEdges-1];
         
+        //Is this faster than checking edge map?
         for(int i = 0; i < numEdges; i++)
         {
         	if (incidenceMatrix[srcPos][i] && incidenceMatrix[tarPos][i])
@@ -319,6 +357,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
             os.print(e.getSrcLabel() + " " + e.getTarLabel());
             os.println();
             os.print(e.getTarLabel() + " " + e.getSrcLabel());
+			os.println();
     	}
         os.println();
         os.flush();
@@ -374,8 +413,6 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     //helper function
     //returns the first array slot that has no vertex associated with it
     private int getNextFreeSpot() {
-    	if(numVertices == 0)
-    		return 0;
         for (int i = 0; i < vertexSize; i++) {
             if (!vertices.containsKey(i)) 
             	return i;
@@ -386,8 +423,6 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     //helper function
     //returns the first array slot that has no edge associated with it
     private int getNextFreeSpotE() {
-    	if(numEdges == 0)
-    		return 0;
         for (int i = 0; i < edgeSize; i++) {
             if (!edges.containsKey(i)) 
             	return i;
@@ -396,21 +431,3 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     }
     
 } // end of class IndMatrix
-
-class Edge<T extends Object> {
-	
-	private T srcLabel;
-	private T tarLabel;
-	public Edge(T srcLabel, T tarLabel)
-	{
-		this.srcLabel = srcLabel;
-		this.tarLabel = tarLabel;
-	}
-	public T getSrcLabel() {
-		return srcLabel;
-	}
-	
-	public T getTarLabel() {
-		return tarLabel;
-	}
-} // end of class Edge
