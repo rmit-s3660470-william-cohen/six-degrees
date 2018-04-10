@@ -49,7 +49,13 @@ public class GraphGenerator {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(fileOut));
             //print edges
-            writer.println("test");
+            for (TreeSet<Integer> edge : edges) {
+                List<Integer> connectedVertices = new ArrayList<Integer>(edge);
+                int v1 = connectedVertices.get(0);
+                int v2 = connectedVertices.get(1);
+                writer.println(v1 + " " + v2);
+            }
+
             writer.close();
         } catch(Exception exception) {
             exception.printStackTrace();

@@ -11,6 +11,7 @@ import java.util.*;
  */
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
+		//FIXME Size stuff
     private static final int INITIAL_SIZE = 1000;
     private static final int SIZE_MULTIPLIER = 2;
 
@@ -54,7 +55,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
             vertices.put(insert, vertLabel);
         }
         //DEBUG
-        System.out.println("Inserting vertex at position: " + insert);
+        //System.out.println("Inserting vertex at position: " + insert);
     } // end of addVertex()
 
 
