@@ -36,13 +36,30 @@ public class GraphSubset {
         System.out.println("Edges: " + graph.getNumEdges());
         System.out.println("Density: " + graph.getDensity());
 
+        Graph<String> subgraph = new Graph<String>();
+        String v;
         int start = (int) (Math.random()*graph.getNumVertices());
-        Queue<String> vertsToAdd = new LinkedList<String>();
-        String v = graph.getVertices().get(start);
+        Queue<String> vertsToVisit = new LinkedList<String>();
+        List<String> visited = new LinkedList<String>();
+        vertsToVisit.add(graph.getVertices().get(start));
         while(subgraph.getNumVertices() < 1000) {
-            if ((String v = vertsToAdd.poll()) != null) {
-
+            if ((v = vertsToVisit.poll()) != null) {
+                if (visited.contains(v)) continue;
+                visited.add(v);
+                subgraph.addVertex(v);
+                for (String w : graph.neighbours(v)) {
+                    if (subgraph.getNumVertices() >= 1000) break;
+                    vertsToVisit.add(w);
+                    subgraph.addVertex(w);
+                    subgraph.addEdge(v,w);
+                }
             }
         }
+
+        System.out.println("--- Sub graph ---");
+        System.out.println("Vertices: " + subgraph.getNumVertices());
+        System.out.println("Edges: " + subgraph.getNumEdges());
+        System.out.println("Density: " + subgraph.getDensity());
+
     }
 }

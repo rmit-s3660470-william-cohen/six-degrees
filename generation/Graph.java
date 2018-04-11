@@ -10,14 +10,14 @@ public class Graph <T extends Object> {
         matrix = new HashMap<T, Set<T> >();
         vertices = 0;
         edges = 0;
-    } // end of AdjMatrix()
+    }
 
 
     public void addVertex(T vertLabel) {
         if (matrix.containsKey(vertLabel)) return;
         matrix.put(vertLabel, new TreeSet<T>());
         vertices++;
-    } // end of addVertex()
+    }
 
 
     public void addEdge(T srcLabel, T tarLabel) {
@@ -28,12 +28,12 @@ public class Graph <T extends Object> {
         matrix.get(srcLabel).add(tarLabel);
         matrix.get(tarLabel).add(srcLabel);
         edges++;
-    } // end of addEdge()
+    }
 
 
     public ArrayList<T> neighbours(T vertLabel) {
         return new ArrayList<T>(matrix.get(vertLabel));
-    } // end of neighbours()
+    }
 
 
     public void removeVertex(T vertLabel) {
