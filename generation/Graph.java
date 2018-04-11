@@ -64,5 +64,13 @@ public class Graph <T extends Object> {
     public ArrayList<T> getVertices() {
         return new ArrayList<T>(matrix.keySet());
     }
+    public void printEdges(PrintWriter os) {
+        for (T v1 : getVertices()) {
+            for (T v2 : matrix.get(v1)) {
+                os.println(v1.toString() + " " + v2.toString());
+            }
+        }
+        os.flush();
+    }
 
 }

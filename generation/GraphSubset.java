@@ -37,11 +37,11 @@ public class GraphSubset {
         System.out.println("Density: " + graph.getDensity());
 
         Graph<String> subgraph = new Graph<String>();
-        String v;
         int start = (int) (Math.random()*graph.getNumVertices());
         Queue<String> vertsToVisit = new LinkedList<String>();
         List<String> visited = new LinkedList<String>();
         vertsToVisit.add(graph.getVertices().get(start));
+        String v;
         while(subgraph.getNumVertices() < 1000) {
             if ((v = vertsToVisit.poll()) != null) {
                 if (visited.contains(v)) continue;
@@ -53,6 +53,9 @@ public class GraphSubset {
                     subgraph.addVertex(w);
                     subgraph.addEdge(v,w);
                 }
+            } else {
+                start = (int) (Math.random()*graph.getNumVertices());
+                vertsToVisit.add(graph.getVertices().get(start));
             }
         }
 
@@ -60,6 +63,13 @@ public class GraphSubset {
         System.out.println("Vertices: " + subgraph.getNumVertices());
         System.out.println("Edges: " + subgraph.getNumEdges());
         System.out.println("Density: " + subgraph.getDensity());
-
+        System.out.println("Writing to file 'test.txt'...");
+        try {
+            PrintWriter writer = new PrintWriter(new File("test.txt"));
+            subgraph.printEdges(writer);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
