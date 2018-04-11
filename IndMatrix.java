@@ -114,50 +114,21 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     public ArrayList<T> neighbours(T vertLabel) {
     	
         ArrayList<T> neighbours = new ArrayList<T>();
-        /*
-        for (Edge e : eIndexes.keySet())
-        {
-        	if(e.getSrcLabel().toString().equals(vertLabel.toString()))
+        
+        for (TreeSet<T> edge : eIndexes.keySet()) {
+        	if(edge.first().equals(vertLabel))
         	{
-        		int vertPos = vIndexes.get(e.getTarLabel());
+        		int vertPos = vIndexes.get(edge.last());
         		neighbours.add(vertices.get(vertPos));
         	}
         	
-        	if(e.getTarLabel().toString().equals(vertLabel.toString()))
+        	else if(edge.last().equals(vertLabel))
         	{
-        		int vertPos = vIndexes.get(e.getSrcLabel());
+        		int vertPos = vIndexes.get(edge.first());
         		neighbours.add(vertices.get(vertPos));
         	}
         }
         
-        /*
-        ArrayList<Integer> neighbourPos = new ArrayList<Integer>();
-        int vertPos = vIndexes.get(vertLabel);
-        
-        //Fills the arraylist with the indexes of the edges associated with the vertex
-        for (int i = 0; i < numEdges; i++)
-        {
-        	if (incidenceMatrix[vertPos][i])
-        	{
-        		neighbourPos.add(i);
-        	}
-        }
-        
-        //Looks at each edge (column) associated with the vertex. Once it finds another vertex
-        //associated with that edge, it adds that vertex to the array and moves to the next relevant edge
-        for (int pos : neighbourPos)
-		{
-        	for (int i = 0; i < numVertices; i++)
-        	{
-       			if(i != vertPos && incidenceMatrix[i][pos])
-       			{
-        			neighbours.add(vertices.get(i));
-        			break;
-       			}
-       		}
-        }
-        
-        */
         return neighbours;
     } // end of neighbours()
     
@@ -246,61 +217,24 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     	
     	if (!vIndexes.containsKey(srcLabel) || !vIndexes.containsKey(tarLabel))
             return;
-            	
-    	int srcPos = vIndexes.get(srcLabel);
-        int tarPos = vIndexes.get(tarLabel);
-        
-        /*
-        for (Edge e : eIndexes.keySet()) 
-        {
-        	if ((e.getSrcLabel().toString().equals(srcLabel.toString()) && 
-        		e.getTarLabel().toString().equals(tarLabel.toString())) ||
-        		(e.getSrcLabel().toString().equals(tarLabel.toString()) && 
-            	e.getTarLabel().toString().equals(srcLabel.toString())))
+            	     
+        for (TreeSet<T> edge : eIndexes.keySet()) {
+        	if((edge.first().equals(srcLabel) && edge.last().equals(tarLabel)) ||
+        			(edge.last().equals(srcLabel) && edge.first().equals(tarLabel)))
         	{
-        		int ePos = eIndexes.get(e);
-        				        		
+        		int ePos = eIndexes.get(edge);
+        		int srcPos = vIndexes.get(srcLabel);
+                int tarPos = vIndexes.get(tarLabel);
+        	
         		incidenceMatrix[srcPos][ePos] = false;
-            	incidenceMatrix[tarPos][ePos] = false;
-            	
-            	eIndexes.remove(e);
+        	    incidenceMatrix[tarPos][ePos] = false;
+        	    
+        	    eIndexes.remove(edge);
                 edges.remove(ePos);
                 
-                numEdges--;
                 return;
-                
         	}
         }
-        
-    	/*
-    	int srcPos = vIndexes.get(srcLabel);
-        int tarPos = vIndexes.get(tarLabel);
-        int removalIndex = -1;
-    	boolean[][] newMatrix = new boolean[numVertices][numEdges-1];
-        
-        //Is this faster than checking edge map?
-        for(int i = 0; i < edgeSize; i++)
-        {
-        	if (incidenceMatrix[srcPos][i] && incidenceMatrix[tarPos][i])
-        	{
-        		removalIndex = i;
-        		break;
-        	}
-        		
-        }
-        if(removalIndex != -1)
-        {
-        	for (int i = 0; i < numVertices; i++) 
-        	{
-                System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, removalIndex);
-                System.arraycopy(incidenceMatrix[i], removalIndex+1, newMatrix[i], removalIndex, numEdges-removalIndex-1);
-            }
-        	incidenceMatrix = newMatrix;
-        	
-        	numEdges--;
-        	
-        }
-        */
     	
     } // end of removeEdges()
 	
