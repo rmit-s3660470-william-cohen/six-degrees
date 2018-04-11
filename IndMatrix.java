@@ -72,6 +72,9 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void addEdge(T srcLabel, T tarLabel) {  	
     	
+    	if (!vIndexes.containsKey(srcLabel) || !vIndexes.containsKey(tarLabel))
+            return;
+    	
     	int srcPos = vIndexes.get(srcLabel);
         int tarPos = vIndexes.get(tarLabel);
         
@@ -134,81 +137,38 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     
     public void removeVertex(T vertLabel) {
-    	/*
     	
-        if (!vIndexes.containsKey(vertLabel)) 
-        	return;
+    	 if (!vIndexes.containsKey(vertLabel)) 
+         	return;
+    	 
+     	Map<Integer,Integer> eRemoveIndexes = new HashMap<Integer, Integer>();
 
     	
-    	int removalIndex = vIndexes.get(vertLabel);
-    	int numEdgesRemoved = 0;
-    	Map<Integer,Integer> eRemoveIndexes = new HashMap<Integer, Integer>();
-    	boolean[][] newMatrix = new boolean[numVertices-1][numEdges];
+     	int vertPos = vIndexes.get(vertLabel);
+
+    	for (TreeSet<T> edge : eIndexes.keySet()) {
+        	if(edge.first().equals(vertLabel) || edge.last().equals(vertLabel))
+        	{
+        		//int vertPos = vIndexes.get(edge.last());
+        		int ePos = eIndexes.get(edge);
+
+        		incidenceMatrix[vertPos][ePos] = false;
+        	    incidenceMatrix[vertPos][ePos] = false;
+        		
+    			eRemoveIndexes.put(ePos,ePos);
+
+        	}
+        }
     	
-    	//Gets a list of indexes for edges to remove
-    	for (int i = 0; i < numEdges; i++)
+    	for(int ePos : eRemoveIndexes.keySet())
     	{
-    		if (incidenceMatrix[removalIndex][i])
-    		{
-    			eRemoveIndexes.put(i,i);
-    			numEdgesRemoved++;
-    		}
+    		eIndexes.remove(edges.get(ePos));
+            edges.remove(ePos);
     	}
     	
-    	for (int i = 0; i < removalIndex; i++) 
-    	{
-            System.arraycopy(incidenceMatrix[i], 0, newMatrix[i], 0, numEdges);
-        }
-        for (int i = removalIndex+1; i < numVertices; i++) 
-        {
-            System.arraycopy(incidenceMatrix[i], 0, newMatrix[i-1], 0, numEdges);
-        }
-    	
-        //Matrix no longer has the removed vertex, but still contains edges associated with said vertex
-    	incidenceMatrix = newMatrix;
-    		
-        vIndexes.remove(vertLabel);
-        vertices.remove(removalIndex);
-        
-        //Shifts vertices down when a lower vertex is removed.
-        //E.g. Remove B in A B C. C will get moved down to position 1 from 2
-        for (int i = removalIndex+1; i < numVertices; i++) {
-            T v = vertices.get(i);
-            vertices.put(i-1, v);
-            vertices.remove(i);
-            vIndexes.remove(v);
-            vIndexes.put(v, i-1);
-        }
-        
-    	numVertices--;
-    	
-    	//Remove edges associated with removed vertex (Don't bother if there's none)
-    	if(numEdgesRemoved > 0)
-    	{
-    		int skips = 0;
-    		newMatrix = new boolean[numVertices][numEdges-numEdgesRemoved];
-    		for (int i = 0; i < numVertices; i++)
-    		{
-    			skips = 0;
-    			for (int j = 0; j < numEdges; j++)
-    			{
-    		        if (!eRemoveIndexes.containsKey(j)) 
-    		        {
-    		        	newMatrix[i][j-skips] = incidenceMatrix[i][j];
-    		        }
-    		        else
-    		        {
-    		        	skips++;
-    		        }
-    			}
-    		
-    		}
-    		
-    		//Matrix has now removed the vertex and all associated edges
-        	incidenceMatrix = newMatrix;
-    		numEdges -= numEdgesRemoved;
-    	}
-    	*/
+    	vIndexes.remove(vertLabel);
+    	vertices.remove(vertPos);
+
     } // end of removeVertex()
 	
     
