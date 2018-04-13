@@ -54,13 +54,12 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
             indexes.put(vertLabel, insert);
             vertices.put(insert, vertLabel);
         }
-        //DEBUG
-        //System.out.println("Inserting vertex at position: " + insert);
     } // end of addVertex()
 
 
     public void addEdge(T srcLabel, T tarLabel) {
-        //TODO validate the edges before chucking them into the structure
+        //validate the edges before chucking them into the structure
+        if (!indexes.containsKey(srcLabel) || !indexes.containsKey(tarLabel)) return;
         int srcPos = indexes.get(srcLabel);
         int tarPos = indexes.get(tarLabel);
         matrix[srcPos][tarPos] = true;

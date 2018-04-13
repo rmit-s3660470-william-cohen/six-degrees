@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class GraphSubset {
+public class SubsetGenerator {
 
     public static void main(String[] args) {
         if (args.length != 3) {
@@ -80,9 +80,9 @@ public class GraphSubset {
             }
         } else if (targetDensity < subgraph.getDensity()) {
             //remove edges
-            randomIndex = (int) (Math.random()*graph.getNumVertices());
+            randomIndex = (int) (Math.random()*subgraph.getNumVertices());
             String v1 = subgraph.getVertices().get(randomIndex);
-            randomIndex = (int) (Math.random()*graph.getNumVertices());
+            randomIndex = (int) (Math.random()*subgraph.getNumVertices());
             String v2 = subgraph.getVertices().get(randomIndex);
             subgraph.removeEdge(v1,v2);
 
