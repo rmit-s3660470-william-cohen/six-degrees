@@ -4,12 +4,17 @@ import java.util.*;
 public class GraphSubset {
 
     public static void main(String[] args) {
-        if (args.length == 0) {
+        if (args.length != 3) {
             System.err.println("Error: No graph file specified.");
-            System.err.println("Usage: GraphSubset [graph file]");
+            System.err.println("Usage: GraphSubset [graph file] [#vertices to sample] [target density]");
+            System.err.println("Example: Subset graph.txt 100 0.25");
             return;
         }
         String fileName = args[0];
+        int verticesInSubset = Integer.parseInt(args[1]);
+        double targetDensity = Double.parseDouble(args[2]);
+        //DEBUG
+        System.out.println("Params: " + fileName + ", " + verticesInSubset + ", " + targetDensity);
         Graph<String> graph = new Graph<String>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(args[0]));
@@ -35,41 +40,69 @@ public class GraphSubset {
         System.out.println("Vertices: " + graph.getNumVertices());
         System.out.println("Edges: " + graph.getNumEdges());
         System.out.println("Density: " + graph.getDensity());
-
+        System.out.println();
+        System.out.println("Generating subset of " + fileName + "...");
+        System.out.println();
+        //create new graph
         Graph<String> subgraph = new Graph<String>();
-        int start = (int) (Math.random()*graph.getNumVertices());
+        //breadth first traverse the full graph
+        int randomIndex = (int) (Math.random()*graph.getNumVertices());
         Queue<String> vertsToVisit = new LinkedList<String>();
         List<String> visited = new LinkedList<String>();
-        vertsToVisit.add(graph.getVertices().get(start));
+        vertsToVisit.add(graph.getVertices().get(randomIndex));
         String v;
-        while(subgraph.getNumVertices() < 1000) {
+        while(subgraph.getNumVertices() < verticesInSubset) {
             if ((v = vertsToVisit.poll()) != null) {
                 if (visited.contains(v)) continue;
                 visited.add(v);
                 subgraph.addVertex(v);
                 for (String w : graph.neighbours(v)) {
-                    if (subgraph.getNumVertices() >= 1000) break;
+                    if (subgraph.getNumVertices() >= verticesInSubset) break;
                     vertsToVisit.add(w);
                     subgraph.addVertex(w);
                     subgraph.addEdge(v,w);
                 }
             } else {
-                start = (int) (Math.random()*graph.getNumVertices());
-                vertsToVisit.add(graph.getVertices().get(start));
+                randomIndex = (int) (Math.random()*graph.getNumVertices());
+                vertsToVisit.add(graph.getVertices().get(randomIndex));
             }
         }
+        System.out.print("Altering edges to meet target density...");
+        if (targetDensity > subgraph.getDensity()) {
+            //add edges
+            while (subgraph.getDensity() < targetDensity) {
+                //TODO fix this shit
+                randomIndex = (int) (Math.random()*subgraph.getNumVertices());
+                String v1 = subgraph.getVertices().get(randomIndex);
+                randomIndex = (int) (Math.random()*subgraph.getNumVertices());
+                String v2 = subgraph.getVertices().get(randomIndex);
+                subgraph.addEdge(v1,v2);
+            }
+        } else if (targetDensity < subgraph.getDensity()) {
+            //remove edges
+            randomIndex = (int) (Math.random()*graph.getNumVertices());
+            String v1 = subgraph.getVertices().get(randomIndex);
+            randomIndex = (int) (Math.random()*graph.getNumVertices());
+            String v2 = subgraph.getVertices().get(randomIndex);
+            subgraph.removeEdge(v1,v2);
 
-        System.out.println("--- Sub graph ---");
+        } else {
+            System.out.println("No edges to alter.");
+        }
+        System.out.println("Done.");
+        System.out.println();
+        System.out.println("--- (Generated) Sub graph ---");
         System.out.println("Vertices: " + subgraph.getNumVertices());
         System.out.println("Edges: " + subgraph.getNumEdges());
         System.out.println("Density: " + subgraph.getDensity());
-        System.out.println("Writing to file 'test.txt'...");
+        String subgraphFile = targetDensity + "_" + verticesInSubset + "_" + fileName;
         try {
-            PrintWriter writer = new PrintWriter(new File("test.txt"));
+            System.out.println("Writing to file '" + subgraphFile + "'...");
+            PrintWriter writer = new PrintWriter(new File(subgraphFile));
             subgraph.printEdges(writer);
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: Couldnt write to file.");
         }
     }
 }

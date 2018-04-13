@@ -37,13 +37,15 @@ public class Graph <T extends Object> {
 
 
     public void removeVertex(T vertLabel) {
-        //TODO implement to also remove edges
+        for (T v : neighbours(vertLabel)) {
+            removeEdge(vertLabel, v);
+        }
         matrix.remove(vertLabel);
     } // end of removeVertex()
 
 
     public void removeEdge(T srcLabel, T tarLabel) {
-        //TODO validate edge before removing
+        if (!matrix.containsKey(srcLabel) || !matrix.containsKey(tarLabel)) return;
         matrix.get(srcLabel).remove(tarLabel);
         matrix.get(tarLabel).remove(srcLabel);
     } // end of removeEdges()
