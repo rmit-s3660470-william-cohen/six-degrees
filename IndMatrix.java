@@ -223,8 +223,37 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
     	// Implement me!
+    	if (!vIndexes.containsKey(vertLabel1) || !vIndexes.containsKey(vertLabel2))
+            return disconnectedDist;
     	
-    	//Depth or Breadth
+    	Queue<T> toVisit = new LinkedList<T>();
+        Queue<Integer> depths = new LinkedList<Integer>();
+        boolean[] marked = new boolean[vertexSize];
+       
+        toVisit.add(vertLabel1);
+        depths.add(0);
+        
+        while(!toVisit.isEmpty())
+        {
+        	//Retrieves and removes the head (first element) of this list.
+            T v = toVisit.remove();
+            int d = depths.remove();
+            
+            //Found shortest path
+            if (v.equals(vertLabel2)) 
+            	return d;
+            //If already visited, go to next vertex
+            if (marked[vIndexes.get(v)]) 
+            	continue;
+            //Marks index as visited
+            marked[vIndexes.get(v)] = true;
+            for (T w : neighbours(v)) {
+                toVisit.add(w);
+                depths.add(d+1);
+            }
+        }
+        
+    	
     	
         // if we reach this point, source and target are disconnected
         return disconnectedDist;    	
