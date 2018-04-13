@@ -117,6 +117,10 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     public ArrayList<T> neighbours(T vertLabel) {
     	
         ArrayList<T> neighbours = new ArrayList<T>();
+        ArrayList<Integer> neighbourPos = new ArrayList<Integer>();
+        int vertPos = vIndexes.get(vertLabel);
+        
+        /*
         
         for (TreeSet<T> edge : eIndexes.keySet()) {
         	if(edge.first().equals(vertLabel))
@@ -131,6 +135,28 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         		neighbours.add(vertices.get(vertPos));
         	}
         }
+        */
+        
+        for (int i = 0; i < edgeSize; i++)
+        {
+        	if (incidenceMatrix[vertPos][i])
+        	{
+        		neighbourPos.add(i);
+        	}
+        }
+        
+        for (int pos : neighbourPos)
+		{
+        	for (int i = 0; i < vertexSize; i++)
+        	{
+       			if(i != vertPos && incidenceMatrix[i][pos])
+       			{
+        			neighbours.add(vertices.get(i));
+        			break;
+       			}
+       		}
+        }
+        
         
         return neighbours;
     } // end of neighbours()
