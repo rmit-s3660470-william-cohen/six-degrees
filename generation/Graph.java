@@ -74,5 +74,25 @@ public class Graph <T extends Object> {
         }
         os.flush();
     }
+    public void printEdgesNoDup(PrintWriter os) {
+        Set<TreeSet<T>> edges = new HashSet<TreeSet<T>>();
+
+        for (T v1 : getVertices()) {
+            for (T v2 : matrix.get(v1)) {
+                TreeSet<T> edge = new TreeSet<T>();
+                edge.add(v1);
+                edge.add(v2);
+                edges.add(edge);
+            }
+        }
+
+        for (TreeSet<T> edge : edges) {
+            os.print(edge.first() + " " + edge.last());
+            os.println();
+        }
+        os.flush();
+
+    }
+
 
 }

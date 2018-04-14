@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
-		//FIXME Size stuff
+    //FIXME Size stuff
     private static final int INITIAL_SIZE = 1000;
     private static final int SIZE_MULTIPLIER = 2;
 

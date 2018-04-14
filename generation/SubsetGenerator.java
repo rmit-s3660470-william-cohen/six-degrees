@@ -99,7 +99,7 @@ public class SubsetGenerator {
         try {
             System.out.println("Writing to file '" + subgraphFile + "'...");
             PrintWriter writer = new PrintWriter(new File(subgraphFile));
-            subgraph.printEdges(writer);
+            subgraph.printEdgesNoDup(writer);
             writer.close();
         } catch (Exception e) {
             System.err.println("Error: Couldnt write to file.");
