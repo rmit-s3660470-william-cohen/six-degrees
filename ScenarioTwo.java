@@ -56,7 +56,7 @@ public class ScenarioTwo {
         long time = timeAvgDistance(adjgraph, pairs);
         System.out.println("AdjMatrix time: " + time);
 
-        long time2 = timeAvgDistance(adjgraph, pairs);
+        long time2 = timeAvgDistance(indgraph, pairs);
         System.out.println("IndMatrix time: " + time2);
     }
     static long timeAvgDistance(FriendshipGraph<String> graph, Set<TreeSet<String>> pairs) {

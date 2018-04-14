@@ -119,31 +119,21 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
         ArrayList<Integer> neighbourPos = new ArrayList<Integer>();
         int vertPos = vIndexes.get(vertLabel);
         
-        /*
-        
-        for (TreeSet<T> edge : eIndexes.keySet()) {
-        	if(edge.first().equals(vertLabel))
-        	{
-        		int vertPos = vIndexes.get(edge.last());
-        		neighbours.add(vertices.get(vertPos));
-        	}
-        	
-        	else if(edge.last().equals(vertLabel))
-        	{
-        		int vertPos = vIndexes.get(edge.first());
-        		neighbours.add(vertices.get(vertPos));
-        	}
-        }
-        */
-        
         for (int i = 0; i < edgeSize; i++)
         {
         	if (incidenceMatrix[vertPos][i])
         	{
-        		neighbourPos.add(i);
+        		for (int j = 0; j < vertexSize; j++)
+        		{
+        			if(incidenceMatrix[j][i] && j!=vertPos)
+        			{
+        				neighbours.add(vertices.get(j));
+            			break;
+        			}
+        		}
         	}
         }
-        
+        /*
         for (int pos : neighbourPos)
 		{
         	for (int i = 0; i < vertexSize; i++)
@@ -156,7 +146,7 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
        		}
         }
         
-        
+        */
         return neighbours;
     } // end of neighbours()
     
@@ -248,8 +238,6 @@ public class IndMatrix <T extends Object> implements FriendshipGraph<T>
     
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
     	// Implement me!
-    	if (!vIndexes.containsKey(vertLabel1) || !vIndexes.containsKey(vertLabel2))
-            return disconnectedDist;
     	
     	Queue<T> toVisit = new LinkedList<T>();
         Queue<Integer> depths = new LinkedList<Integer>();
