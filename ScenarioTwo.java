@@ -4,7 +4,8 @@ import java.util.*;
 public class ScenarioTwo {
     public static void main(String[] args) {
         String fileName = args[0];
-        FriendshipGraph<String> graph = new AdjMatrix<String>();
+        FriendshipGraph<String> adjgraph = new AdjMatrix<String>();
+        FriendshipGraph<String> indgraph = new AdjMatrix<String>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(args[0]));
             String line;
@@ -16,9 +17,15 @@ public class ScenarioTwo {
                 tokens = line.split(delimiter);
                 srcLabel = tokens[0];
                 tarLabel = tokens[1];
-                graph.addVertex(srcLabel);
-                graph.addVertex(tarLabel);
-                graph.addEdge(srcLabel, tarLabel);
+
+                adjgraph.addVertex(srcLabel);
+                adjgraph.addVertex(tarLabel);
+                adjgraph.addEdge(srcLabel, tarLabel);
+
+                indgraph.addVertex(srcLabel);
+                indgraph.addVertex(tarLabel);
+                indgraph.addEdge(srcLabel, tarLabel);
+
             }
         } catch (FileNotFoundException ef) {
             System.err.println("Error: File not present.");

@@ -93,6 +93,26 @@ public class Graph <T extends Object> {
         os.flush();
 
     }
+    public TreeSet<T> getRandomEdge() {
+        HashSet<TreeSet<T>> edges = new HashSet<TreeSet<T>>();
+
+        for (T v1 : getVertices()) {
+            for (T v2 : matrix.get(v1)) {
+                TreeSet<T> edge = new TreeSet<T>();
+                edge.add(v1);
+                edge.add(v2);
+                edges.add(edge);
+            }
+        }
+
+        int edgeIndex = new Random().nextInt(edges.size());
+        int i = 0;
+        for (TreeSet<T> e : edges) {
+            if (i == edgeIndex) return e;
+            i++;
+        }
+        return null;
+    }
 
 
 }

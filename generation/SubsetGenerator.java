@@ -71,21 +71,21 @@ public class SubsetGenerator {
         if (targetDensity > subgraph.getDensity()) {
             //add edges
             while (subgraph.getDensity() < targetDensity) {
-                //TODO fix this shit
                 randomIndex = (int) (Math.random()*subgraph.getNumVertices());
                 String v1 = subgraph.getVertices().get(randomIndex);
                 randomIndex = (int) (Math.random()*subgraph.getNumVertices());
                 String v2 = subgraph.getVertices().get(randomIndex);
+                if (v1.equals(v2)) continue;
                 subgraph.addEdge(v1,v2);
             }
         } else if (targetDensity < subgraph.getDensity()) {
             //remove edges
-            randomIndex = (int) (Math.random()*subgraph.getNumVertices());
-            String v1 = subgraph.getVertices().get(randomIndex);
-            randomIndex = (int) (Math.random()*subgraph.getNumVertices());
-            String v2 = subgraph.getVertices().get(randomIndex);
-            subgraph.removeEdge(v1,v2);
-
+            while (subgraph.getDensity() > targetDensity) {
+                TreeSet<String> edge = subgraph.getRandomEdge();
+                String v1 = edge.first();
+                String v2 = edge.last();
+                subgraph.removeEdge(v1,v2);
+            }
         } else {
             System.out.println("No edges to alter.");
         }
