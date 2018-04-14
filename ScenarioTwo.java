@@ -1,21 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-class Pair<T extends Object> {
-    T t1;
-    T t2;
-    public Pair(T t1, T t2) {
-        this.t1 = t1;
-        this.t2 = t2;
-    }
-    @Override
-    public boolean equals(Object o) {
-        //if ()
-        return false;
-    }
-
-}
-
 public class ScenarioTwo {
     static final int NUMBER_OF_PAIRS = 100;
     public static void main(String[] args) throws Exception {
