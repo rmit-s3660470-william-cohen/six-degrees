@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-//Set<T> pair = new LinkedSet<T>();
 
 /**
  * Incidence matrix implementation for the FriendshipGraph interface.
