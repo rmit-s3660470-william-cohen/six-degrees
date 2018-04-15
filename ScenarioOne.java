@@ -5,9 +5,12 @@ import java.util.Random;
 public class ScenarioOne {
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.err.println();
+            System.err.println("No file specifed.");
+            return;
         }
         String fileName = args[0];
+        System.out.println("-- Scenario One --");
+        System.out.println("File: " + fileName);
         FriendshipGraph<String> adjgraph = new AdjMatrix<String>();
         FriendshipGraph<String> indgraph = new IndMatrix<String>();
         

@@ -5,10 +5,12 @@ public class ScenarioTwo {
     static final int NUMBER_OF_PAIRS = 100;
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
-            System.err.println();
+            System.err.println("No file specifed.");
+            return;
         }
-        System.out.println("Loading graph data...");
         String fileName = args[0];
+        System.out.println("-- ScenarioTwo --");
+        System.out.println("File: " + fileName);
         FriendshipGraph<String> adjgraph = new AdjMatrix<String>();
         FriendshipGraph<String> indgraph = new IndMatrix<String>();
         try {
@@ -37,7 +39,7 @@ public class ScenarioTwo {
         } catch (IOException ei) {
             System.err.println("Error: Something went wrong.");
         }
-        System.out.println("Generatinig pairs...");
+        //System.out.println("Generatinig pairs...");
         StringWriter vertexData = new StringWriter();
         adjgraph.printVertices(new PrintWriter(vertexData));
         String[] vertices = vertexData.toString().split(" ");
@@ -51,8 +53,13 @@ public class ScenarioTwo {
             pair.add(v2);
             pairs.add(pair);
         }
-        System.out.println("-- Testing with " + NUMBER_OF_PAIRS + "pairs --");
+        //System.out.println("-- Testing with " + NUMBER_OF_PAIRS + "pairs --");
+
         timeAvgDistance(adjgraph, pairs);
+        timeAvgDistance(indgraph, pairs);
+        timeAvgDistance(adjgraph, pairs);
+        timeAvgDistance(indgraph, pairs);
+
         long time = timeAvgDistance(adjgraph, pairs);
         System.out.println("AdjMatrix time: " + time);
 
