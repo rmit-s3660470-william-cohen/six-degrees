@@ -57,8 +57,6 @@ public class ScenarioTwo {
 
         timeAvgDistance(adjgraph, pairs);
         timeAvgDistance(indgraph, pairs);
-        timeAvgDistance(adjgraph, pairs);
-        timeAvgDistance(indgraph, pairs);
 
         long time = timeAvgDistance(adjgraph, pairs);
         System.out.println("AdjMatrix time: " + time);
